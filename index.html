@@ -182,6 +182,39 @@
                 return null;
             };
 
+            // Fungsi baru yang andal untuk memformat blok
+            const toggleBlockFormat = (tag) => {
+                const selection = window.getSelection();
+                if (!selection.rangeCount) return;
+
+                const parentBlock = getParentBlock(selection.anchorNode);
+
+                // Jika tidak dapat menemukan blok induk, kembali ke execCommand sebagai upaya terakhir
+                if (!parentBlock) {
+                    document.execCommand('formatBlock', false, `<${tag}>`);
+                    return;
+                }
+
+                // Logika toggle: Jika blok saat ini sudah memiliki tag yang sama, kembalikan ke paragraf
+                const newTag = parentBlock.tagName === tag ? 'P' : tag;
+                const newElement = document.createElement(newTag);
+
+                // Pindahkan semua konten dari blok lama ke yang baru
+                while (parentBlock.firstChild) {
+                    newElement.appendChild(parentBlock.firstChild);
+                }
+
+                // Ganti blok lama dengan yang baru di DOM
+                parentBlock.parentNode.replaceChild(newElement, parentBlock);
+
+                // Kembalikan seleksi ke dalam elemen baru agar pengguna bisa melanjutkan mengetik
+                selection.removeAllRanges();
+                const range = document.createRange();
+                range.selectNodeContents(newElement);
+                range.collapse(false); // Pindahkan kursor ke akhir
+                selection.addRange(range);
+            };
+
             // Event listener utama untuk toolbar
             toolbar.addEventListener('click', (e) => {
                 e.preventDefault(); // Mencegah editor kehilangan fokus
@@ -191,21 +224,14 @@
                 const { command, value } = button.dataset;
 
                 if (command === 'formatBlock') {
-                    const selection = window.getSelection();
-                    if (!selection.rangeCount) return;
-
-                    // Logika toggle: Jika blok saat ini sudah dalam format yang dituju, kembalikan ke paragraf
-                    const parentBlock = getParentBlock(selection.anchorNode);
-                    const newTag = parentBlock && parentBlock.tagName === value ? 'P' : value;
-
-                    document.execCommand('formatBlock', false, `<${newTag}>`);
+                    toggleBlockFormat(value); // Gunakan fungsi baru yang andal
                 } else if (command === 'createLink') {
                     const url = prompt('Masukkan URL:', 'https://');
                     if (url) {
                         document.execCommand(command, false, url);
                     }
                 } else {
-                    // Untuk perintah sederhana seperti bold, italic, daftar
+                    // Untuk perintah sederhana (bold, italic, dll.) yang umumnya masih berfungsi dengan baik
                     document.execCommand(command, false, null);
                 }
 
