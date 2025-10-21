@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Turndown library for HTML to Markdown conversion -->
     <script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+    <!-- Lucide Icons for a professional look and feel -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* Custom styles for the editor and buttons */
         body {
@@ -109,25 +111,25 @@
                 <label for="rich-text-editor" class="block mb-2 font-semibold text-gray-300">Editor Rich Text</label>
                 <!-- Toolbar -->
                 <div class="toolbar">
-                    <button data-command="undo" title="Undo (Ctrl+Z)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h12a5 5 0 0 1 0 10H7"/><path d="M3 9L7 5M3 9l-4 4"/></svg></button>
-                    <button data-command="redo" title="Redo (Ctrl+Y)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 9H9a5 5 0 0 0 0 10h5"/><path d="M21 9l-4-4M21 9l-4 4"/></svg></button>
+                    <button data-command="undo" title="Undo (Ctrl+Z)"><i data-lucide="undo-2"></i></button>
+                    <button data-command="redo" title="Redo (Ctrl+Y)"><i data-lucide="redo-2"></i></button>
                     <div class="toolbar-divider"></div>
-                    <button data-command="bold" title="Bold (Ctrl+B)" class="font-bold">B</button>
-                    <button data-command="italic" title="Italic (Ctrl+I)" class="italic">I</button>
-                    <button data-command="underline" title="Underline (Ctrl+U)" class="underline">U</button>
-                    <button data-command="strikeThrough" title="Strikethrough" class="line-through">S</button>
+                    <button data-command="bold" title="Bold (Ctrl+B)"><i data-lucide="bold"></i></button>
+                    <button data-command="italic" title="Italic (Ctrl+I)"><i data-lucide="italic"></i></button>
+                    <button data-command="underline" title="Underline (Ctrl+U)"><i data-lucide="underline"></i></button>
+                    <button data-command="strikeThrough" title="Strikethrough"><i data-lucide="strikethrough"></i></button>
                     <div class="toolbar-divider"></div>
                     <button data-command="formatBlock" data-value="H1" title="Heading 1" class="font-semibold text-sm">H1</button>
                     <button data-command="formatBlock" data-value="H2" title="Heading 2" class="font-semibold text-sm">H2</button>
                     <button data-command="formatBlock" data-value="H3" title="Heading 3" class="font-semibold text-sm">H3</button>
-                     <button data-command="formatBlock" data-value="P" title="Paragraph" class="text-sm">P</button>
+                    <button data-command="formatBlock" data-value="P" title="Paragraph" class="text-sm">P</button>
                     <div class="toolbar-divider"></div>
-                    <button data-command="insertUnorderedList" title="Bulleted List"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
-                    <button data-command="insertOrderedList" title="Numbered List"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
-                     <button data-command="formatBlock" data-value="BLOCKQUOTE" title="Blockquote"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 7 4 8 8 8z"/><path d="M14 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 7 4 8 8 8z"/></svg></button>
+                    <button data-command="insertUnorderedList" title="Bulleted List"><i data-lucide="list"></i></button>
+                    <button data-command="insertOrderedList" title="Numbered List"><i data-lucide="list-ordered"></i></button>
+                    <button data-command="formatBlock" data-value="BLOCKQUOTE" title="Blockquote"><i data-lucide="quote"></i></button>
                     <div class="toolbar-divider"></div>
-                    <button data-command="createLink" title="Insert Link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"/></svg></button>
-                    <button data-command="removeFormat" title="Clear Formatting"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5V3M8.5 8.5L7 7M5 12H3M7 17l-1.5 1.5M17 17l1.5 1.5M19 12h2M17 7l1.5-1.5M14 5h-4"/><path d="M9.5 17.5l1.5-2.5 1.5 2.5"/><path d="M14.5 17.5h-5"/></svg></button>
+                    <button data-command="createLink" title="Insert Link"><i data-lucide="link"></i></button>
+                    <button data-command="removeFormat" title="Clear Formatting"><i data-lucide="remove-formatting"></i></button>
                 </div>
                 <div id="rich-text-editor" contenteditable="true" class="editor overflow-y-auto" spellcheck="false">
                     <p>Sekarang semua tombol berfungsi dengan baik. Coba format teks ini menjadi <b>Heading 1</b> atau <i>buat daftar baru</i>.</p>
@@ -346,6 +348,9 @@
             // Initial conversion and state update
             convertToMarkdown();
             updateToolbarState();
+
+            // Render all Lucide icons
+            lucide.createIcons();
         });
     </script>
 </body>
