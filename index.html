@@ -167,23 +167,68 @@
             const downloadButton = document.getElementById('download-button');
             const toolbar = document.querySelector('.toolbar');
 
-            // --- FUNGSI UTAMA BARU YANG LEBIH ANDAL ---
-            const formatBlock = (tag) => {
+            // --- FUNGSI UTAMA YANG TELAH DIPERBARUI ---
+
+            // Peta perintah untuk fungsionalitas editor
+            const commandMap = {
+                'bold': () => document.execCommand('bold'),
+                'italic': () => document.execCommand('italic'),
+                'underline': () => document.execCommand('underline'),
+                'strikeThrough': () => document.execCommand('strikeThrough'),
+                'insertUnorderedList': () => document.execCommand('insertUnorderedList'),
+                'insertOrderedList': () => document.execCommand('insertOrderedList'),
+                'formatBlock': (value) => toggleBlockStyle(value),
+                'createLink': () => {
+                    const url = prompt('Masukkan URL:', 'https://');
+                    if (url) document.execCommand('createLink', false, url);
+                },
+                'undo': () => document.execCommand('undo'),
+                'redo': () => document.execCommand('redo'),
+                'removeFormat': () => document.execCommand('removeFormat')
+            };
+
+            // Fungsi untuk mengganti gaya blok (misalnya, H1, P)
+            const toggleBlockStyle = (tag) => {
                 const selection = window.getSelection();
                 if (!selection.rangeCount) return;
                 
-                // Set default tag to P if the current tag is the same as the one being applied
-                const currentBlock = getParentBlock(selection.anchorNode);
-                const newTag = currentBlock && currentBlock.tagName === tag ? 'P' : tag;
+                const parentBlock = findParentBlock(selection.anchorNode, editor);
+                if (!parentBlock) return;
 
-                // Use the reliable execCommand for this simple case
-                document.execCommand('formatBlock', false, `<${newTag}>`);
+                const newTag = parentBlock.tagName === tag ? 'P' : tag;
+                const newElement = document.createElement(newTag);
+
+                while (parentBlock.firstChild) {
+                    newElement.appendChild(parentBlock.firstChild);
+                }
+
+                parentBlock.parentNode.replaceChild(newElement, parentBlock);
+
+                const newRange = document.createRange();
+                newRange.selectNodeContents(newElement);
+                newRange.collapse(false);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+            };
+
+            // --- FUNGSI BANTU ---
+
+            // Menemukan elemen blok induk dari node yang diberikan
+            const findParentBlock = (node, stopNode) => {
+                while (node && node !== stopNode) {
+                    if (['P', 'H1', 'H2', 'H3', 'BLOCKQUOTE', 'DIV'].includes(node.nodeName)) {
+                        return node;
+                    }
+                    node = node.parentNode;
+                }
+                return null;
             };
             
-            // Helper function to get the parent block element (P, H1, DIV etc.)
-            const getParentBlock = (node) => {
-                while(node && node !== editor) {
-                    if (['P', 'H1', 'H2', 'H3', 'BLOCKQUOTE', 'DIV'].includes(node.tagName)) {
+            // Menemukan tag induk dari node yang diberikan
+            const findParentTag = (node, tag, stopNode) => {
+                while (node && node !== stopNode) {
+                    if (node.nodeName === tag) {
                         return node;
                     }
                     node = node.parentNode;
@@ -191,22 +236,16 @@
                 return null;
             };
 
+            // Event listener utama untuk toolbar
             toolbar.addEventListener('click', (e) => {
-                e.preventDefault(); // Prevent editor from losing focus
+                e.preventDefault();
                 const button = e.target.closest('button');
                 if (!button) return;
 
                 const { command, value } = button.dataset;
 
-                if (command === 'formatBlock') {
-                    formatBlock(value); // Gunakan fungsi baru yang andal
-                } else if (command === 'createLink') {
-                    const url = prompt('Masukkan URL:', 'https://');
-                    if (url) {
-                        document.execCommand(command, false, url);
-                    }
-                } else {
-                    document.execCommand(command, false, null); // For bold, italic, lists, etc.
+                if (commandMap[command]) {
+                    commandMap[command](value);
                 }
 
                 editor.focus();
